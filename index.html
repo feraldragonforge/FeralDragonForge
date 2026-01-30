@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Feral Dragon Forge</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=MedievalSharp&family=Inter:wght@400;500&display=swap" rel="stylesheet" />
+
+<!-- EmailJS -->
+<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+<script>
+  emailjs.init("SSys98IOz7H2wgpkD");
+</script>
+
+<style>
+:root {
+  --ember: #ff6a00;
+  --gold: #c9a14a;
+}
+
+/* RESET */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: #050402;
+  color: #eee;
+  font-family: 'Inter', sans-serif;
+}
+
+/* NAV */
+nav {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  padding: 18px 70px;
+  display: flex;
+  justify-content: flex-end;
+  background: rgba(10,8,6,0.9);
+  border-bottom: 1px solid rgba(201,161,74,0.25);
+  z-index: 100;
+}
+
+nav ul { list-style: none; display: flex; gap: 30px; }
+nav a {
+  font-family: 'Cinzel', serif;
+  text-decoration: none;
+  color: var(--gold);
+}
+nav a:hover { color: var(--ember); }
+
+/* HERO */
+.hero {
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.4;
+}
+
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at bottom, rgba(255,106,0,0.25), transparent 60%);
+}
+
+/* EMBERS */
+#embers {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* LOGO */
+.hero-logo {
+  position: absolute;
+  top: 15%;
+  left: 50%;
+  width: 85vw;
+  max-width: 1100px;
+  transform:
+    translateX(-50%)
+    translateY(var(--float-y))
+    rotateX(var(--rx))
+    rotateY(var(--ry))
+    scale(1.03);
+  opacity: 0.7;
+  filter: drop-shadow(0 0 45px rgba(255,106,0,0.8));
+  animation: float 8s ease-in-out infinite;
+  transition: transform 0.12s ease-out;
+  will-change: transform;
+  --rx: 0deg;
+  --ry: 0deg;
+  --float-y: 0px;
+}
+
+@keyframes float {
+  0% { --float-y: 0px; }
+  50% { --float-y: -20px; }
+  100% { --float-y: 0px; }
+}
+
+/* HERO CONTENT */
+.hero-content {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  text-align: center;
+  padding-bottom: 120px;
+}
+
+.hero h2 {
+  font-family: 'MedievalSharp', serif;
+  font-size: 68px;
+  color: #f5e6c8;
+  text-shadow: 0 0 40px rgba(255,106,0,0.6);
+}
+
+.hero p {
+  font-family: 'Cinzel', serif;
+  color: var(--gold);
+  margin-top: 10px;
+}
+
+/* BUTTON */
+.btn {
+  margin-top: 35px;
+  padding: 16px 40px;
+  border-radius: 30px;
+  background: linear-gradient(145deg, #5a3b12, #c9a14a, #5a3b12);
+  color: #000;
+  font-weight: 700;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  font-family: 'Cinzel', serif;
+}
+
+/* SECTIONS */
+section {
+  padding: 120px 80px;
+  opacity: 0;
+  transform: translateY(60px);
+  transition: 1s ease;
+}
+section.show { opacity: 1; transform: none; }
+
+.section-title {
+  font-family: 'Cinzel', serif;
+  font-size: 46px;
+  color: var(--gold);
+  text-align: center;
+  margin-bottom: 70px;
+}
+
+/* SERVICES */
+.services {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 40px;
+}
+
+.service-card {
+  background: linear-gradient(180deg, #14110c, #080604);
+  padding: 45px;
+  border-radius: 18px;
+  border: 1px solid rgba(201,161,74,0.35);
+  transition: 0.4s ease;
+}
+.service-card:hover { transform: translateY(-10px); }
+
+/* GALLERY */
+.gallery {
+  margin-top: 16px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+  gap: 10px;
+  max-height: 260px;
+  overflow-y: auto;
+  padding: 10px;
+  background: #0d0a07;
+  border-radius: 12px;
+}
+
+.gallery img {
+  width: 100%;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+.gallery img:hover { transform: scale(1.1); }
+
+/* LIGHTBOX */
+#lightbox {
+  position: fixed;
+  inset: 0;
+  background: rgba(5,4,2,0.95);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  z-index: 9999;
+}
+#lightbox.show {
+  opacity: 1;
+  pointer-events: all;
+}
+#lightbox img {
+  max-width: 90vw;
+  max-height: 90vh;
+  border-radius: 14px;
+  box-shadow: 0 0 60px rgba(255,106,0,0.7);
+}
+.lightbox-close {
+  position: absolute;
+  top: 30px;
+  right: 40px;
+  font-size: 48px;
+  color: var(--gold);
+  cursor: pointer;
+}
+
+/* CONTACT */
+#contact form {
+  max-width: 600px;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+#contact input,
+#contact textarea {
+  padding: 15px;
+  background: #0d0a07;
+  border: 1px solid rgba(201,161,74,0.4);
+  color: #fff;
+  border-radius: 6px;
+  font-family: 'Cinzel', serif;
+}
+
+/* FOOTER */
+footer {
+  text-align: center;
+  padding: 40px;
+  opacity: 0.6;
+  font-family: 'Cinzel', serif;
+}
+
+/* MOBILE */
+@media (max-width: 768px) {
+  section { padding: 80px 30px; }
+  .hero h2 { font-size: 46px; }
+}
+</style>
+</head>
+
+<body>
+
+<nav>
+  <ul>
+    <li><a href="#home">Home</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<div class="hero" id="home">
+  <video autoplay muted loop playsinline>
+    <source src="media/Forge-Video.mp4" type="video/mp4">
+  </video>
+
+  <canvas id="embers"></canvas>
+
+  <img src="Images/feral-dragon-forge-logo.png" class="hero-logo" id="logo" alt="Feral Dragon Forge Logo">
+
+  <div class="hero-content">
+    <h2>Forged By Creativity<br>Perfected By Machine</h2>
+    <p>Ancient Craft • Modern Precision</p>
+    <a href="#contact" class="btn">Enter The Forge</a>
+  </div>
+</div>
+
+<section id="services">
+  <h2 class="section-title">Forged Services</h2>
+  <div class="services">
+    <div class="service-card">
+      <h3>Custom 3D Printing</h3>
+      <p>Crafted with precision and strength.</p>
+    </div>
+    <div class="service-card">
+      <h3>Rapid Prototyping</h3>
+      <p>From vision to reality.</p>
+    </div>
+    <div class="service-card">
+      <h3>Models & Figures</h3>
+      <p>Detailed relics and tabletop legends.</p>
+      <div class="gallery" id="gallery"></div>
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <h2 class="section-title">Summon The Forge</h2>
+  <form id="contact-form">
+    <input name="name" placeholder="Your Name" required>
+    <input name="email" type="email" placeholder="Your Email" required>
+    <textarea name="message" placeholder="Describe your creation…" required></textarea>
+    <button class="btn" type="submit">Send Request</button>
+    <div id="form-status"></div>
+  </form>
+</section>
+
+<footer>© 2026 Feral Dragon Forge</footer>
+
+<!-- LIGHTBOX -->
+<div id="lightbox">
+  <span class="lightbox-close">×</span>
+  <img id="lightbox-img">
+</div>
+
+<script>
+// Scroll reveal
+document.querySelectorAll("section").forEach(sec => {
+  new IntersectionObserver(e => {
+    if (e[0].isIntersecting) sec.classList.add("show");
+  }).observe(sec);
+});
+
+// Logo parallax (desktop only)
+const logo = document.getElementById("logo");
+if (window.innerWidth > 768) {
+  document.addEventListener("mousemove", e => {
+    const x = (e.clientX / window.innerWidth - 0.5) * 20;
+    const y = (e.clientY / window.innerHeight - 0.5) * 20;
+    logo.style.setProperty("--ry", `${x}deg`);
+    logo.style.setProperty("--rx", `${-y}deg`);
+  });
+}
+
+// Gallery + Lightbox + Swipe
+const gallery = document.getElementById("gallery");
+const lightbox = document.getElementById("lightbox");
+const lightboxImg = document.getElementById("lightbox-img");
+const closeBtn = document.querySelector(".lightbox-close");
+const imageCount = 49;
+let currentIndex = 0;
+let startX = 0;
+
+for (let i = 1; i <= imageCount; i++) {
+  const img = document.createElement("img");
+  img.src = `Images/Prints/Print${i}.jpg`;
+  img.alt = `3D Print Model ${i}`;
+  img.loading = "lazy";
+  img.addEventListener("click", () => openLightbox(i - 1));
+  gallery.appendChild(img);
+}
+
+function openLightbox(index) {
+  currentIndex = index;
+  lightboxImg.src = gallery.children[currentIndex].src;
+  lightbox.classList.add("show");
+}
+
+function closeLightbox() {
+  lightbox.classList.remove("show");
+}
+
+closeBtn.addEventListener("click", closeLightbox);
+lightbox.addEventListener("click", e => {
+  if (e.target === lightbox) closeLightbox();
+});
+
+lightbox.addEventListener("touchstart", e => {
+  startX = e.touches[0].clientX;
+});
+lightbox.addEventListener("touchend", e => {
+  const delta = e.changedTouches[0].clientX - startX;
+  if (Math.abs(delta) > 50) {
+    currentIndex += delta < 0 ? 1 : -1;
+    currentIndex = Math.max(0, Math.min(currentIndex, gallery.children.length - 1));
+    lightboxImg.src = gallery.children[currentIndex].src;
+  }
+});
+
+// EMBERS
+const canvas = document.getElementById("embers");
+const ctx = canvas.getContext("2d");
+let embers = [];
+
+function resize() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+window.addEventListener("resize", resize);
+resize();
+
+function spawnEmber() {
+  embers.push({
+    x: Math.random() * canvas.width,
+    y: canvas.height + 10,
+    r: Math.random() * 2 + 1,
+    v: Math.random() * 1.2 + 0.4,
+    a: Math.random() * 0.5 + 0.3
+  });
+}
+
+function animateEmbers() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  embers.forEach((e, i) => {
+    ctx.fillStyle = `rgba(255, ${120 + Math.random()*40}, 0, ${e.a})`;
+    ctx.beginPath();
+    ctx.arc(e.x, e.y, e.r, 0, Math.PI * 2);
+    ctx.fill();
+    e.y -= e.v;
+    e.a -= 0.002;
+    if (e.a <= 0) embers.splice(i, 1);
+  });
+  if (embers.length < 80) spawnEmber();
+  requestAnimationFrame(animateEmbers);
+}
+animateEmbers();
+
+// EmailJS
+document.getElementById("contact-form").addEventListener("submit", e => {
+  e.preventDefault();
+  emailjs.sendForm("service_4aqflr6", "template_zn5rn0u", e.target)
+    .then(() => document.getElementById("form-status").innerText = "🔥 Request forged")
+    .catch(() => document.getElementById("form-status").innerText = "❌ Forge failed");
+});
+</script>
+
+</body>
+</html>
